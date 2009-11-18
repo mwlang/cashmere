@@ -1,0 +1,10 @@
+--- 
+en-US: 
+    login: Login
+    login_title: Login Request
+    username: E-mail address
+    password: Password
+    login_instructions: Please enter the login credentials for your account
+    already_logged_in: You are already logged in
+    invalid_password: The password you supplied is invalid
+    

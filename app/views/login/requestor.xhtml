@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+	<title>CAS Login</title>
+	<link type="text/css" href="/themes/cas.css" rel="stylesheet"/>
+	<link type="text/css" href="/themes/flowmor/theme.css" rel="stylesheet"/>
+</head>
+
+<body onload="if (document.getElementById('username')) document.getElementById('username').focus()">
+	<div id="logo-container"></div>
+	<div id="login-container">
+		<div id="login-form-container">
+			<div id="messagebox-container">#{xlate :login_instructions}</div>
+			<form id="login-form" method="post" onsubmit="submitbutton = document.getElementById('login-submit'); submitbutton.value='Please wait...'; submitbutton.disabled=true; return true;" action="/login">
+				<label id="username-label" for="username">#{xlate :username}</label>
+				<input id="username" type="text" name="username" accesskey="u" tabindex="1" size="32"/>
+				<label id="password-label" for="password">#{xlate :password}</label>
+				<input id="password" type="password" autocomplete="off" name="password" accesskey="p" tabindex="2" size="32"/>
+				<input id="lt" type="hidden" name="lt" value="LT-1258514307r65823D0480E699DA35"/>
+				<input id="service" type="hidden" name="service" value=""/>
+				<input id="login-submit" type="submit" class="button" value="LOGIN" accesskey="l" tabindex="4"/>
+			</form>
+		</div>
+	</div>
+</body>
+
+</html>

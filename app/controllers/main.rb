@@ -1,8 +1,10 @@
+
 class MainController < Controller
-  # the index action is called automatically when no other action is specified
+  helper :localize
+
   def index
-    @title = "Welcome to Ramaze!"
-    # redirect Login.route :/
+    @title = "CAS Server"
+    # redirect Login.route :/ if Ramaze.options.mode == :live
   end
 
   # the string returned at the end of the function is used as the html body
@@ -10,5 +12,6 @@ class MainController < Controller
   # is silently ignored
   def notemplate
     "there is no 'notemplate.xhtml' associated with this action"
-  end
+  end    
+  
 end

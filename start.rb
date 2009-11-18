@@ -5,4 +5,16 @@
 
 require File.join(File.expand_path(File.dirname(__FILE__)), 'app')
 
-Ramaze.start(:adapter => :mongrel, :port => 7000, :file => __FILE__)
+Ramaze.start(:adapter => :mongrel, :port => 7000, :file => __FILE__) do |mode|
+  mode.use Rack::Lint
+  mode.use Rack::CommonLogger, Ramaze::Log
+  mode.use Rack::ShowExceptions
+  mode.use Rack::ShowStatus
+  mode.use Rack::RouteExceptions
+  mode.use Rack::ConditionalGet
+  mode.use Rack::ETag
+  mode.use Rack::Head
+  mode.use Ramaze::Reloader
+  mode.use Rack::Locale
+  mode.run Ramaze::AppMap
+end

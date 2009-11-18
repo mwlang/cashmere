@@ -1,48 +1,68 @@
-* {	font-family: Verdana, sans-serif; }
-body { text-align: center;	font-size: .8em; }
+* { font-family: Verdana, sans-serif; }
+body { background-color: #234; color: white; text-align: center; font-size: .8em; }
 input {	font-weight: normal; font-size: .9em; }
-label { display: block; padding-bottom: 5px;}  
+label { color: #234; font-size: 1.1em; display: block; padding-bottom: 5px;}  
 label:after { content: ':'; }
+a { text-decoration: none; }
+a:hover { padding-bottom: 2px; border-bottom: 1px solid blue; }
 
-#login-form { margin-left: 95px; }
-
-#messagebox-container {
-	padding-right: 20px;
-	min-height: 30px;
-	height: 40px;
-	margin-bottom: 10px;
-	margin-left: -10px;
-	margin-right: 20px;
+h1 {
+	color: #234;
+	background-color: white;
+	width: 400px;
+	padding-top: 25px;
+	padding-bottom: 25px;
+	margin: 0 auto;
+	margin-top: 75px;
+	border: 1px solid white;
+	border-bottom: 5px solid #EEE;
 }
+#login-form { margin-left: 3em; }
 
-div.messagebox {
-	min-height: 40px;
-	padding-top: 5px;
-	padding-left: 55px;
-	font-size: .9em;
-	vertical-align: middle;
+#messagebox {
+	margin: 0px;
+	padding: 0px;
+}
+#messagebox-container {
+	color: black;
+	margin: 25px;
+	margin-top: 0px;
+	padding-top: 0px;
+	text-align: center;
+	font-size: 1.5em;
 }
 
 div.mistake {
 	color: #d00;
-	height: 40px;
-	background-image: url(warning.png);
-	background-repeat: no-repeat;
-	background-position: 10px 5px;
 }
 
 div.confirmation {
 	color: #280;
-	height: 40px;
-	background-image: url(ok.png);
-	background-repeat: no-repeat;
-	background-position: 10px 5px;
 }
 
 div.notice {
 	color: #04c;
-	height: 40px;
-	background-image: url(notice.png);
-	background-repeat: no-repeat;
-	background-position: 10px 5px;
 }
+
+#login-form {
+	width: 80%;
+	margin: 0 auto;
+}
+#login-container {
+	margin: 0 auto;
+	width: 400px;
+	border: 1px solid white;
+	border-top: 5px solid white;
+	background-color: #EEE;
+}
+
+#login-form-container {
+	text-align: left;
+	margin-top: 10px;
+	margin-bottom: 60px;
+}
+
+#username { width: 25em; margin-bottom: 10px; }
+#password { width: 15em; margin-bottom: 10px; }
+#login-submit {	margin: 0px; padding: 0px; margin-left: 10px; }
+
