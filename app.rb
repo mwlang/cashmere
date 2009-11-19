@@ -5,11 +5,10 @@
 
 require 'rubygems'
 require 'ramaze'
-require 'rack/contrib'
 
 Ramaze.setup :verbose => true do
-  gem 'sequel'
-  gem 'i18n'
+  gem 'sequel', :version => '>=3.1.0'
+  gem 'i18n',   :version => '>=0.3.0'
 end
 
 # Load the library files 
@@ -22,7 +21,7 @@ Ramaze.options.layouts = File.join('app', 'views', 'layouts')
 
 # Establish database connection 
 DB_CONFIG = YAML.load(File.read(File.join(__DIR__, 'database.yml')))
-DB = Sequel.connect(DB_CONFIG[Ramaze.options[:mode].to_s])
+# DB = Sequel.connect(DB_CONFIG[Ramaze.options[:mode].to_s])
 
 # Load the Internationalization files
 I18n.load_path += Dir[ File.join(__DIR__, 'locales', 'localizations', '*.{rb,yml}') ]

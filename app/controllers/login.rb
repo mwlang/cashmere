@@ -156,7 +156,6 @@ credential acceptor.
 =end
 
 class Login < Controller
-  helper :localize
   
   def index
     @service = request[:service]
@@ -166,18 +165,24 @@ class Login < Controller
     request.post? ? behave_as_acceptor : behave_as_requestor
   end
 
+  def requestor
+    @service = request[:service]
+    @renew = 0 == (request[:renew] =~ /yes|YES|true|TRUE|1/)
+    @gateway = @renew ? false : @service && 0 == (request[:gateway]  =~ /yes|YES|true|TRUE|1/)
+  end
+  
   private
   
   def behave_as_acceptor
     @title = "Login Acceptor"
     @ticket_granting_cookie = request.cookies[:tgt]
     
-    render_view :acceptor
+    render_partial :acceptor
   end
   
   def behave_as_requestor
     @title = translate :login_title
     
-    render_view :requestor
+    render_partial :requestor
   end
 end

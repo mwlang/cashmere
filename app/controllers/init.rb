@@ -2,11 +2,11 @@
 # controllers
 
 class Controller < Ramaze::Controller
-  layout :default
-  helper :xhtml
-  engine :Etanni
+  layout :application
+  helper :localize
+  engine :Erubis
 
-  before_all{set_headers_to_prevent_caching}
+  before_all { set_headers_to_prevent_caching }
   
   private
   
