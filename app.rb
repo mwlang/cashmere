@@ -26,7 +26,7 @@ DB_CONFIG = YAML.load(File.read(File.join(__DIR__, 'database.yml')))
 # Load the Internationalization files
 I18n.load_path += Dir[ File.join(__DIR__, 'locales', 'localizations', '*.{rb,yml}') ]
 I18n.load_path += Dir[ File.join(__DIR__, 'locales', 'translations', '*.{rb,yml}') ]
-I18n.default_locale = "en-US" 
+I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
 
 # Ramaze.options.each_option{|key, value| puts("%-20s: %s" % [key, value[:value]]) }
 

@@ -158,31 +158,27 @@ credential acceptor.
 class Login < Controller
   
   def index
-    @service = request[:service]
-    @renew = 0 == (request[:renew] =~ /yes|YES|true|TRUE|1/)
-    @gateway = @renew ? false : @service && 0 == (request[:gateway]  =~ /yes|YES|true|TRUE|1/)
+    get_params
+    @title = translate :login_title
 
-    request.post? ? behave_as_acceptor : behave_as_requestor
+    render_partial request.post? ? :acceptor : :requestor
   end
 
   def requestor
-    @service = request[:service]
-    @renew = 0 == (request[:renew] =~ /yes|YES|true|TRUE|1/)
-    @gateway = @renew ? false : @service && 0 == (request[:gateway]  =~ /yes|YES|true|TRUE|1/)
+    redirect :invalid unless request.get?
   end
   
+  def acceptor
+    redirect :invalid unless request.post?
+  end
+
   private
   
-  def behave_as_acceptor
-    @title = "Login Acceptor"
+  def get_params
+    @service = request[:service]
+    @renew = 0 == (request[:renew] =~ /yes|YES|true|TRUE|1/)
+    @gateway = @renew ? false : !!@service && 0 == (request[:gateway]  =~ /yes|YES|true|TRUE|1/)
     @ticket_granting_cookie = request.cookies[:tgt]
-    
-    render_partial :acceptor
   end
   
-  def behave_as_requestor
-    @title = translate :login_title
-    
-    render_partial :requestor
-  end
 end

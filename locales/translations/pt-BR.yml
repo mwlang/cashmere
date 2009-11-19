@@ -1,9 +1,11 @@
 --- 
 pt-BR: 
-    login: Início de uma sessão
-    username: Conta de correio electrónico
-    password: Senha     
-    login_instructions: Incorpore por favor as credenciais do Início de uma sessão para seu cliente
     already_logged_in: Você é entrado já
+    invalid_request: O pedido recebido era inválido
     invalid_password: A senha que você forneceu é inválida
+    login: Início de uma sessão
+    login_instructions: Incorpore por favor as credenciais do Início de uma sessão para seu cliente
+    login_title: Início de uma sessão
+    password: Senha     
+    username: Conta de correio electrónico
     

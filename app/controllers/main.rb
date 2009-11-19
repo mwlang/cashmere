@@ -6,4 +6,8 @@ class MainController < Controller
     @title = "CAS Server"
   end
 
+  def invalid
+    @title = "Invalid Request"
+  end
+  
 end
