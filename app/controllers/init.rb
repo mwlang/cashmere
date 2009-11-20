@@ -7,8 +7,13 @@ class Controller < Ramaze::Controller
   engine :Erubis
 
   before_all { set_headers_to_prevent_caching }
+  before_all { set_default_title }
   
   private
+  
+  def set_default_title
+    @title = translate :cas_server
+  end
   
   def set_headers_to_prevent_caching
     response.headers['Pragma'] = 'no-cache'

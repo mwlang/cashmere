@@ -32,6 +32,28 @@ h1 {
 	font-size: 1.5em;
 }
 
+.flash {
+	margin: 0px;
+	margin-top: 10px;
+	padding: 15px;
+	text-align: center;
+}
+
+#flash_error {
+	background-color: #E66;
+	color: white;
+}
+
+#flash_warn {
+	background-color: #EE6;
+	color: #234;
+}
+
+#flash_notice {
+	background-color: #6CE;
+	color: white;
+}
+
 div.mistake {
 	color: #d00;
 }
@@ -59,7 +81,7 @@ div.notice {
 #login-form-container {
 	text-align: left;
 	margin-top: 10px;
-	margin-bottom: 60px;
+	margin-bottom: 20px;
 }
 
 #username { width: 25em; margin-bottom: 10px; }

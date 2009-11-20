@@ -1,4 +1,4 @@
-require File.join('..', 'spec_helper')
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'spec_helper'))
 
 describe MainController do
   behaves_like :rack_test
@@ -16,9 +16,9 @@ describe MainController do
     last_response.headers['Cache-Control'].should == 'no-store'
   end
 
-  should 'show /notemplate' do
-    get('/notemplate').status.should == 200
+  should 'show /invalid' do
+    get('/invalid').status.should == 200
     last_response['Content-Type'].should == 'text/html'
-    last_response.should =~ /there is no 'notemplate\.xhtml' associated with this action/
+    last_response.should =~ /Invalid Request/
   end
 end

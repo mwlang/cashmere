@@ -24,13 +24,19 @@
 			<%= @content %>
 		</div>
 	</div>
+	<% if Ramaze.options.mode[:dev] -%>
 	<div id="parameters">
+		<p>Username: <%= @username %></p>
+		<p>Password: <%= @password %></p>
+		<p>Login Ticket: <%= @login_ticket %></p>
 		<p>Gateway: <%= @gateway %></p>
 		<p>Renew: <%= @renew %></p>
+		<p>Warn: <%= @warn %></p>
 		<p>Service: <%= @service %></p>
 		<p>TGC: <%= @ticket_granting_cookie %></p>
 		<p>Locale:  <%= request.env["HTTP_ACCEPT_LANGUAGE"] %><br/><%= request.env['rack.locale'] %></p>
 	</div>
+	<% end -%>
 </body>
 
 </html>

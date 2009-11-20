@@ -1,10 +1,8 @@
-require File.join('..', 'spec_helper')
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'spec_helper'))
 
 describe Rack::Localize do
   app = lambda { |env| [200, {'Content-Type' => 'text/html'}, env['PATH_INFO']] }
   lm = Rack::Localize.new(app)
-  request_en = Rack::MockRequest.env_for("/", "HTTP_ACCEPT_LANGUAGE" => "en")
-
 
   should 'rank locales by queue priority' do
     lm.rank_locales('').should == []

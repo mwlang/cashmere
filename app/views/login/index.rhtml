@@ -1,5 +1,5 @@
-<div id="messagebox-container"><p>acceptor</p><%= t :login_instructions %></div>
-<form id="login-form" method="post" onsubmit="submitbutton = document.getElementById('login-submit'); submitbutton.value='Please wait...'; submitbutton.disabled=true; return true;" action="/login">
+<div id="messagebox-container"><%= t :login_instructions %></div>
+<form id="login-form" method="post" onsubmit="submitbutton = document.getElementById('login-submit'); submitbutton.value='<%= t :please_wait %>'; submitbutton.disabled=true; return true;" action="/login">
 	<label id="username-label" for="username"><%= t :username %></label>
 	<input id="username" type="text" name="username" accesskey="u" tabindex="1" size="32"/>
 	<label id="password-label" for="password"><%= t :password %></label>
@@ -8,7 +8,6 @@
 	<% if @service %>
 		<input id="service" type="hidden" name="service" value="<%= @service %>"/>
 	<% end %>
-	<input id="login-submit" type="submit" class="button" value="LOGIN" accesskey="l" tabindex="4"/>
+	<input id="login-submit" type="submit" class="button" value="<%= t :login %>" accesskey="l" tabindex="4"/>
 </form>
-
-
+<%= flashbox %>

@@ -155,30 +155,53 @@ credential acceptor.
       appropriate, provide an opportunity for the user to attempt to login again. 
 =end
 
+VALID_USERS = {"mwlang" => "mwlang", "demo" => "secret"}
+
 class Login < Controller
+  # helper :blink
   
   def index
-    get_params
     @title = translate :login_title
-
-    render_partial request.post? ? :acceptor : :requestor
+    get_params
+    if authenticated?
+      if @warn 
+        redirect @service ? @service : :success 
+      else
+        redirect(route :continue, :url => @service)
+      end
+    end
   end
 
-  def requestor
-    redirect :invalid unless request.get?
-  end
-  
-  def acceptor
-    redirect :invalid unless request.post?
+  def continue
+    flash[:notice] = translate(:continue_message).gsub("%url%", request[:url])
   end
 
   private
+
+  def authenticate
+    valid_creds = @username && @password && @login_ticket && VALID_USERS[@username] == @password
+    if !valid_creds && @username && @password
+      flash[:error] = translate VALID_USERS[@username] ? :invalid_password : :invalid_username
+    end
+    valid_creds
+  end
+  
+  def authenticated?    
+    @authenticated ||= authenticate
+  end
   
   def get_params
+    @login_ticket = validate_login_ticket(request[:lt])
+    @username = request[:username] if @login_ticket
+    @password = request[:password] if @login_ticket
     @service = request[:service]
     @renew = 0 == (request[:renew] =~ /yes|YES|true|TRUE|1/)
     @gateway = @renew ? false : !!@service && 0 == (request[:gateway]  =~ /yes|YES|true|TRUE|1/)
+    @warn = 0 == (request[:warn] =~ /yes|YES|true|TRUE|1/)
     @ticket_granting_cookie = request.cookies[:tgt]
   end
   
+  def validate_login_ticket(ticket)
+    0 == (ticket =~ /LT-/)
+  end
 end
