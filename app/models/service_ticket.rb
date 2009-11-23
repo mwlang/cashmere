@@ -24,22 +24,27 @@
 class ServiceTicket < Ticket
   FIVE_MINUTES = 5 * 60 
   
+  def self.find(service, ticket)
+    # ensure ticket isn't malformed before attempting to fetch
+    return nil unless sane_ticket(ticket)
+
+    db_info = DB[:tickets].filter(:ticket => ticket)
+    @attributes = db_info.first
+    db_info.delete if @attributes
+    @attributes ? new(service, ticket).load_attributes(@attributes) : nil
+  end
+    
   def ticket_prefix; "ST-" end
 
   def initialize(service, ticket = nil)
     super(ticket)
-    ticket ? @requesting_service = service : self.service = service
+    ticket ? @requesting_service = service.to_s : self.service = service.to_s
   end
     
   def valid? 
     service_identifier_matches? && !expired?
   end
   
-  def find_ticket(ticket)
-    super(ticket)
-    DB[:tickets].filter(:id => @attributes[:id]).delete if @attributes[:id]
-  end
-    
   private
 
   def service_identifier_matches?

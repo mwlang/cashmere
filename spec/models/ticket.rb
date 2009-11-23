@@ -9,12 +9,6 @@ describe Ticket do
     end
   end
   
-  it 'should not initialize' do
-    lambda { Ticket.new }.
-           should.raise(RuntimeError).
-           message.should.match(/abstract method/)
-  end
-  
   describe "Mocked Ticket" do
     
     it "should initialize" do 
@@ -32,6 +26,17 @@ describe Ticket do
       ticket.ticket.size.should > 32
     end
     
+    it "should not error with malformed ticket request" do
+      ticket = MockTicket.find('234567890)((*&^%$#@!))')
+      ticket.should == nil
+
+      ticket = MockTicket.find('delete from tickets')
+      ticket.should == nil
+
+      ticket = MockTicket.find('<h1>not gonna do it</h1>')
+      ticket.should == nil
+    end
+    
     it "should not have an id" do
       ticket = MockTicket.new
       ticket.id.should == nil
@@ -45,7 +50,7 @@ describe Ticket do
     it "should persist to the database" do 
       ticket = MockTicket.new
       ticket.save
-      cheese = MockTicket.new(ticket.ticket)
+      cheese = MockTicket.find(ticket.ticket)
       cheese.ticket.should == ticket.ticket
       cheese.id.should.not == nil
       cheese.id.should == ticket.id
@@ -56,8 +61,23 @@ describe Ticket do
       ticket.save
       ticket.hostname = "cheesy.com"
       ticket.save
-      cheese = MockTicket.new(ticket.ticket)
+      cheese = MockTicket.find(ticket.ticket)
       cheese.hostname.should == 'cheesy.com'
+    end
+    
+    it "can be found and loaded" do
+      ticket = MockTicket.new
+      ticket.save
+      cheese = MockTicket.find(ticket.ticket)
+      cheese.should.not == nil
+      cheese.id.should == ticket.id
+      cheese.ticket.should == ticket.ticket
+      cheese.is_a?(MockTicket).should == true
+    end
+
+    it "non-existent tickets should not be findable" do
+      bogus_ticket = MockTicket.find("MOCK-bogusticketthatshouldneverexist")
+      bogus_ticket.should == nil
     end
   end
 end

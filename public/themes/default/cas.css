@@ -70,6 +70,18 @@ div.notice {
 	width: 80%;
 	margin: 0 auto;
 }
+#logout-form {
+	width: 80%;
+	margin: 0 auto;
+	margin-top: 25px;
+	text-align: center;
+}
+#logout-form a {
+	border: 1px solid #234;
+	background-color: white;
+	padding: 5px;
+	font-weight: bold;
+}
 #login-container {
 	margin: 0 auto;
 	width: 400px;

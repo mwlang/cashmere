@@ -40,7 +40,7 @@ describe ProxyTicket do
         ticket.created_at -= 6 * 60 # five minutes
         ticket.save
         
-        bad_ticket = ProxyTicket.new(ticket.service, ticket.ticket)
+        bad_ticket = ProxyTicket.find(ticket.service, ticket.ticket)
         bad_ticket.valid?.should == false
       end
     end
@@ -58,33 +58,6 @@ describe ProxyTicket do
     
       it "should be sufficiently long" do 
         ticket.ticket.size.should > 32
-      end
-    end
-
-    describe "service identifier" do 
-      
-      it "must match what was specified to /login" do
-        new_ticket = ProxyTicket.new('http://cybrains.net').save
-        good_ticket = ProxyTicket.new(new_ticket.service, new_ticket.ticket)
-        good_ticket.valid?.should == true
-
-        new_ticket = ProxyTicket.new('http://cybrains.net').save
-        bad_ticket = ProxyTicket.new('http://www.cybrains.net', new_ticket.ticket)
-        bad_ticket.valid?.should == false
-      end
-        
-      it "is only valid once!" do 
-        new_ticket = ProxyTicket.new('http://cybrains.net').save
-        good_ticket = ProxyTicket.new(new_ticket.service, new_ticket.ticket)
-        bad_ticket = ProxyTicket.new(new_ticket.service, new_ticket.ticket)
-        good_ticket.valid?.should == true
-        bad_ticket.valid?.should == false
-      end
-      
-      it "is never valid if service identifiers don't match" do
-        new_ticket = ProxyTicket.new('http://cybrains.net').save
-        bad_ticket = ProxyTicket.new('http://www.cybrains.net', new_ticket.ticket)
-        bad_ticket.valid?.should == false
       end
     end
     

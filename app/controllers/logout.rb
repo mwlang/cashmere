@@ -25,6 +25,11 @@ implemented, /logout SHOULD also provide a link to the provided URL as described
 class Logout < Controller
   def index
     @url = request[:url]
-    @title = "Logout"
+    @title = translate :cas_server
+    ticket = TicketGrantingTicket.find(request.cookies["ticket_granting_ticket"])
+    if ticket
+      ticket.expire! 
+      response.delete_cookie("ticket_granting_ticket")
+    end
   end
 end

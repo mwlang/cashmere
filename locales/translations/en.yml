@@ -3,12 +3,16 @@ en:
     already_logged_in: You are already logged in
     cas_server: CAS Server
     continue_message: You have successfully signed in. The site that requested your authentication has provided a link it would like you to follow.  Please click <a href="%url%">%url%</a> if you wish to continue
+    invalid_login_ticket: The login ticket was invalid
     invalid_password: The password you supplied is invalid
     invalid_request: The request received was invalid
     invalid_username: The E-mail address you supplied is invalid
+    logged_in_message: You are already logged in as %username%
+    logged_out_message: You have been logged out
     login: Login
     login_instructions: Please enter the login credentials for your account
     login_title: Login Request
+    logout: Logout
     logout_message: The application you just logged out of has provided a link it would like you to follow.  Please click <a href="%url%">%url%</a> if you wish to continue
     success: Success
     successful_login: You are logged in

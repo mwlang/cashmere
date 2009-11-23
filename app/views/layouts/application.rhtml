@@ -12,8 +12,7 @@
 	<meta name="generator" content="Ramaze <%= Ramaze::VERSION %>" />
 	<meta name="keywords" content="Central Authorization Server" />
 	<meta name="date" content="<%= Time.now.iso8601 %>" />
-	<link type="text/css" href="/themes/cas.css" rel="stylesheet"/>
-	<link type="text/css" href="/themes/flowmor/theme.css" rel="stylesheet"/>
+	<link type="text/css" href="/themes/default/cas.css" rel="stylesheet"/>
 </head>
 
 <body onload="if (document.getElementById('username')) document.getElementById('username').focus()">
@@ -28,12 +27,12 @@
 	<div id="parameters">
 		<p>Username: <%= @username %></p>
 		<p>Password: <%= @password %></p>
-		<p>Login Ticket: <%= @login_ticket %></p>
+		<p>Service: <%= @service %></p>
+		<p>Login Ticket: <%= @login_ticket.ticket if @login_ticket %></p>
 		<p>Gateway: <%= @gateway %></p>
 		<p>Renew: <%= @renew %></p>
 		<p>Warn: <%= @warn %></p>
-		<p>Service: <%= @service %></p>
-		<p>TGC: <%= @ticket_granting_cookie %></p>
+		<p>TGC: <%= @ticket_granting_ticket.ticket if @ticket_granting_ticket %></p>
 		<p>Locale:  <%= request.env["HTTP_ACCEPT_LANGUAGE"] %><br/><%= request.env['rack.locale'] %></p>
 	</div>
 	<% end -%>

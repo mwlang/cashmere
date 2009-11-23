@@ -158,17 +158,15 @@ credential acceptor.
 VALID_USERS = {"mwlang" => "mwlang", "demo" => "secret"}
 
 class Login < Controller
-  # helper :blink
   
   def index
-    @title = translate :login_title
     get_params
-    if authenticated?
-      if @warn 
-        redirect @service ? @service : :success 
-      else
-        redirect(route :continue, :url => @service)
-      end
+    if logged_in?
+      @title = translate :cas_server
+      handle_logged_in_session
+    else
+      @title = translate :login_title
+      handle_login_request_session
     end
   end
 
@@ -178,12 +176,32 @@ class Login < Controller
 
   private
 
-  def authenticate
-    valid_creds = @username && @password && @login_ticket && VALID_USERS[@username] == @password
-    if !valid_creds && @username && @password
-      flash[:error] = translate VALID_USERS[@username] ? :invalid_password : :invalid_username
+  def handle_logged_in_session
+    redirect @service if !@warn && @service && @service == @ticket_granting_ticket.service
+    redirect Login.route(:continue, :url => @service) if @service
+    
+    flash[:notice] = translate(:logged_in_message).gsub('%username%', @ticket_granting_ticket.username.to_s)
+  end
+  
+  def handle_login_request_session
+    if authenticated?
+      @ticket_granting_ticket = TicketGrantingTicket.new(@username).save
+      response.set_cookie("ticket_granting_ticket", @ticket_granting_ticket.ticket)
+      
+      redirect :success unless @service
+      redirect route(:continue, :url => @service) if @warn
+      redirect @service
     end
-    valid_creds
+    @new_login_ticket = LoginTicket.new(@service).save
+  end
+  
+  def logged_in?
+    @ticket_granting_ticket = TicketGrantingTicket.find(request.cookies["ticket_granting_ticket"])
+    @ticket_granting_ticket
+  end
+  
+  def authenticate
+    valid_login_ticket && valid_user
   end
   
   def authenticated?    
@@ -192,16 +210,28 @@ class Login < Controller
   
   def get_params
     @service = request[:service]
-    @login_ticket = validate_login_ticket(request[:lt])
-    @username = request[:username] if @login_ticket
-    @password = request[:password] if @login_ticket
-    @renew = 0 == (request[:renew] =~ /yes|YES|true|TRUE|1/)
-    @gateway = @renew ? false : !!@service && 0 == (request[:gateway]  =~ /yes|YES|true|TRUE|1/)
-    @warn = 0 == (request[:warn] =~ /yes|YES|true|TRUE|1/)
-    @ticket_granting_cookie = request.cookies[:tgt]
+    @login_ticket = LoginTicket.find(@service, request[:lt]) if request.post?
+
+    @username   =   request[:username] if @login_ticket
+    @password   =   request[:password] if @login_ticket
+    @renew      =   0 == (request[:renew] =~ /yes|YES|true|TRUE|1/)
+    @gateway    =   @renew ? false : !!@service && 0 == (request[:gateway]  =~ /yes|YES|true|TRUE|1/)
+    @warn       =   0 == (request[:warn] =~ /yes|YES|true|TRUE|1/)
+  end
+    
+  def valid_login_ticket
+    valid = @login_ticket && @login_ticket.valid?
+    if !valid && request.post?
+      flash[:error] = translate :invalid_login_ticket unless (@login_ticket && @login_ticket.valid?)
+    end
+    valid
   end
   
-  def validate_login_ticket(ticket)
-   ticket == ticket.match(/^LT-[a-zA-Z0-9\-]*$/).to_s and LoginTicket.new(@service)
+  def valid_user
+    valid = @username && @password && VALID_USERS[@username] == @password
+    if request.post? && !valid
+      flash[:error] = translate VALID_USERS[@username] ? :invalid_password : :invalid_username
+    end
+    valid
   end
 end

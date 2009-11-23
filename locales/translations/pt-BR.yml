@@ -3,12 +3,16 @@ pt-BR:
     already_logged_in: Você é entrado já
     cas_server: Usuário do CAS
     continue_message:  Você assinou com sucesso dentro. O local que pediu sua autenticação forneceu uma ligação que gostaria de você de seguir. Estale por favor <a href="%url%">%url%</a> se você deseja continuar.
+    invalid_login_ticket: O bilhete do início de uma sessão era inválido
     invalid_password: A senha que você forneceu é inválida
     invalid_request: O pedido recebido era inválido
     invalid_username: O conta de correio electrónico que você forneceu é inválido
-    login: Início de Uma sessão
+    logged_in_message: Você é entrado já como %username%
+    logged_out_message: Você foi registrado para fora
+    login: Início de uma sessão
     login_instructions: Incorpore por favor as credenciais do Início de uma sessão para seu cliente
     login_title: Início de uma sessão
+    logout: Saída
     logout_message: A aplicação que você apenas registrou fora de forneceu uma ligação gostaria de você de seguir. Estale por favor <a href="%url%">%url%</a> se você deseja continuar.
     password: Senha     
     success: Sucesso
