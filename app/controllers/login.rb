@@ -191,10 +191,10 @@ class Login < Controller
   end
   
   def get_params
+    @service = request[:service]
     @login_ticket = validate_login_ticket(request[:lt])
     @username = request[:username] if @login_ticket
     @password = request[:password] if @login_ticket
-    @service = request[:service]
     @renew = 0 == (request[:renew] =~ /yes|YES|true|TRUE|1/)
     @gateway = @renew ? false : !!@service && 0 == (request[:gateway]  =~ /yes|YES|true|TRUE|1/)
     @warn = 0 == (request[:warn] =~ /yes|YES|true|TRUE|1/)
@@ -202,6 +202,6 @@ class Login < Controller
   end
   
   def validate_login_ticket(ticket)
-    0 == (ticket =~ /LT-/)
+   ticket == ticket.match(/^LT-[a-zA-Z0-9\-]*$/).to_s and LoginTicket.new(@service)
   end
 end

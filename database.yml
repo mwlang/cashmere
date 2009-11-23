@@ -10,8 +10,10 @@ dev:
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 spec:
-  adapter: sqlite
-  database: cashmere_test.db
+  adapter: mysql
+  database: cashmere_test
+  host: localhost
+  user: root
 
 live:
   adapter: mysql

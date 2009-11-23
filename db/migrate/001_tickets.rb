@@ -4,14 +4,11 @@ class CreateTickets < Sequel::Migration
     create_table :tickets do
       primary_key   :id			
       String        :ticket,            :null => false,		:index => true			
-      DateTime      :created_on,		    :null => false,		:index => true
-      DateTime      :consumed,			    :null => true			
-      Integer       :ticket_id,			    :null => false			
-      String        :client_hostname,	  :null => false			
-      String        :iou,				        :null => false			
-      String        :service,			      :null => false			
-      String        :type,				      :null => false			
-      String        :username,			    :null => false			
+      DateTime      :created_at,		    :null => false,		:index => true
+      Integer       :ticket_id,			    :null => true			
+      String        :hostname,	        :null => true			
+      String        :service,			      :null => true			
+      String        :username,			    :null => true			
     end
   end
   

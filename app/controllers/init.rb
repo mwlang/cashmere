@@ -18,4 +18,5 @@ class Controller < Ramaze::Controller
 end
 
 # Load each Controller:
-%w(main login logout validate service_validate proxy_validate proxy).each{|f| require __DIR__(f)}
+controllers = %w(main login logout validate service_validate proxy_validate proxy)
+controllers.each{|f| require __DIR__(f)}

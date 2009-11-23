@@ -9,11 +9,5 @@ describe Login do
     response['Content-Type'].should == 'text/html'
     response.should =~ /Login/
   end
-  
-  should 'show login page' do
-    post('/login').status.should == 200
-    last_response['Content-Type'].should == 'text/html'
-    last_response.should =~ /Login/
-  end
-  
+    
 end
