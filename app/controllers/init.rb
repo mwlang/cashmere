@@ -8,12 +8,23 @@ class Controller < Ramaze::Controller
   layout :application
   map_layouts '/'
 
-  before_all { set_default_title }
+  before_all { @title = localize :cas_server }
+  
+  def locale(name)
+    session[:lang] = name
+    redirect r(:/)
+  end
   
   private
   
-  def set_default_title
-    @title = translate :cas_server
+  # Load the Internationalization files
+  Dictionary = Ramaze::Helper::Localize::Dictionary.new
+  Dir.glob(LOCALE_PATH).each do |path|
+    Dictionary.load(File.basename(path, '.yaml').intern, :yaml => path)
+  end
+
+  def localize_dictionary
+    Dictionary
   end
 end
 

@@ -1,28 +1,26 @@
-<% if logged_in? %>
+<% if @lr.signed_in? || @lr.logged_in? %>
 
-	<div id="messagebox-container"><%= t :welcome %></div>
 	<%= flashbox %>
+
 	<form id="logout-form" method="post" action="/logout">
-		<input id="logout-submit" type="submit" class="button" value="<%= t :logout %>" accesskey="l" tabindex="1"/>
+		<input id="logout-submit" type="submit" class="button" value="<%= localize :logout %>" accesskey="l" tabindex="1"/>
 	</form>
 	
 <% else %>
 
-	<div id="messagebox-container"><%= t :login_instructions %></div>
-	<form id="login-form" method="post" onsubmit="submitbutton = document.getElementById('login-submit'); submitbutton.value='<%= t :please_wait %>'; submitbutton.disabled=true; return true;" action="/login">
-		<label id="username-label" for="username"><%= t :username %></label>
+	<div id="messagebox-container"><%= localize :login_instructions %></div>
+
+	<form id="login-form" method="post" onsubmit="submitbutton = document.getElementById('login-submit'); submitbutton.value='{please_wait}'; submitbutton.disabled=true; return true;" action="/login">
+		<label id="username-label" for="username"><%= localize :username %></label>
 		<input id="username" type="text" name="username" accesskey="u" tabindex="1" size="32"/>
-		<label id="password-label" for="password"><%= t :password %></label>
+		<label id="password-label" for="password"><%= localize :password %></label>
 		<input id="password" type="password" autocomplete="off" name="password" accesskey="p" tabindex="2" size="32"/>
 		<input id="lt" type="hidden" name="lt" value="<%= @new_login_ticket.ticket %>"/>
-		<% if @service %>
-			<input id="service" type="hidden" name="service" value="<%= @service %>"/>
-		<% end %>
-		<% if @warn %>
-			<input id="warn" type="hidden" name="warn" value="<%= @warn %>"/>
-		<% end %>
-		<input id="login-submit" type="submit" class="button" value="<%= t :login %>" accesskey="l" tabindex="4"/>
+		<% if @lr.service %><input id="service" type="hidden" name="service" value="<%= @lr.service %>"/><% end %>
+		<% if @lr.warn %><input id="warn" type="hidden" name="warn" value="<%= @lr.warn %>"/><% end %>
+		<input id="login-submit" type="submit" class="button" value="<%= localize :login %>" accesskey="l" tabindex="4"/>
 	</form>
+
 	<%= flashbox %>
 	
 <% end %>

@@ -100,3 +100,9 @@ div.notice {
 #password { width: 15em; margin-bottom: 10px; }
 #login-submit {	margin: 0px; padding: 0px; margin-left: 10px; }
 
+#parameters {
+	margin: 0 auto;
+	margin-top: 15px;
+	width: 600px;
+	background-color: #123;
+}

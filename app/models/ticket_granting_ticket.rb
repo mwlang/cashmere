@@ -13,11 +13,33 @@
 =end
 
 class TicketGrantingTicket < Ticket
-  def ticket_prefix; "TGT-" end
+  def ticket_prefix; "TGC-" end
   
-  def initialize(username)
-    super(nil)
-    @attributes[:username] = username if username
+  
+  def self.find(ticket)
+    # ensure ticket isn't malformed before attempting to fetch
+    return nil unless sane_ticket(ticket)
+    
+    values = DB[:tickets].filter(:ticket => ticket).first
+    ticket = new(values[:username], values) if values
+    ticket
   end
   
+  def self.create(username = nil)
+    new(username).save
+  end
+  
+  def initialize(username, values = nil)
+    super(values)
+    @attributes[:username] = username
+  end
+
+  def valid?
+    !expired?
+  end
+  
+  def expired?
+    (Time.now - @attributes[:created_at]) > 30.days
+  end  
+
 end

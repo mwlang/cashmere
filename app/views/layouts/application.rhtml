@@ -15,27 +15,25 @@
 	<link type="text/css" href="/themes/default/cas.css" rel="stylesheet"/>
 </head>
 
-<body onload="if (document.getElementById('username')) document.getElementById('username').focus()">
+<body onload="document.getElementById('username') && document.getElementById('username').focus()">
 	<h1><%= @title %></h1>
 	<div id="logo-container"></div>
-	<div id="login-container">
-		<div id="login-form-container">
-			<%= @content %>
+	<div id="login-container"><div id="login-form-container"><%= @content %></div></div>
+	<% if Ramaze.options.mode[:dev] && @lr %>
+		<div id="parameters">
+			<center>
+				<table>
+					<tr><td>Username: <%= @lr.username %></td><td>Password: <%= @lr.password %></td></tr>
+					<tr><td>Service: <%= @lr.service %></td><td>Warn: <%= @lr.warn %></td></tr>
+					<tr><td colspan=2>Login Ticket: <%= @lr.login_ticket.ticket if @lr.login_ticket %></td></tr>
+					<tr><td>Gateway: <%= @gateway %></td><td>Renew: <%= @renew %></td></tr>
+					<tr><td colspan=2>TGC: <%= @lr.ticket_granting_cookie.ticket if @lr.ticket_granting_cookie %></td></tr>
+					<tr><td colspan=2>Locale:  <%= request.env["HTTP_ACCEPT_LANGUAGE"] %><br/><%= request.env['rack.locale'] %></td></tr>
+				</table>
+				<%= request.cookies.inspect %>
+			</center>
 		</div>
-	</div>
-	<% if Ramaze.options.mode[:dev] -%>
-	<div id="parameters">
-		<p>Username: <%= @username %></p>
-		<p>Password: <%= @password %></p>
-		<p>Service: <%= @service %></p>
-		<p>Login Ticket: <%= @login_ticket.ticket if @login_ticket %></p>
-		<p>Gateway: <%= @gateway %></p>
-		<p>Renew: <%= @renew %></p>
-		<p>Warn: <%= @warn %></p>
-		<p>TGC: <%= @ticket_granting_ticket.ticket if @ticket_granting_ticket %></p>
-		<p>Locale:  <%= request.env["HTTP_ACCEPT_LANGUAGE"] %><br/><%= request.env['rack.locale'] %></p>
-	</div>
-	<% end -%>
+	<% end %>
 </body>
 
 </html>

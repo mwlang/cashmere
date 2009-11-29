@@ -1,5 +1,5 @@
 --- 
-pt-BR: 
+pt: 
     already_logged_in: Você é entrado já
     cas_server: Usuário do CAS
     continue_message:  Você assinou com sucesso dentro. O local que pediu sua autenticação forneceu uma ligação que gostaria de você de seguir. Estale por favor <a href="%url%">%url%</a> se você deseja continuar.
@@ -17,6 +17,7 @@ pt-BR:
     password: Senha     
     success: Sucesso
     successful_login: Você é assinado dentro
+    signed_in_message: Você é entrado já como %username%
     username: Conta de correio electrónico
     please_wait: Espere por favor
     welcome: Boa vinda

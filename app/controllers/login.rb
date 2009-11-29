@@ -155,83 +155,60 @@ credential acceptor.
       appropriate, provide an opportunity for the user to attempt to login again. 
 =end
 
-VALID_USERS = {"mwlang" => "mwlang", "demo" => "secret"}
-
 class Login < Controller
   
   def index
-    get_params
-    if logged_in?
-      @title = translate :cas_server
+    @lr = LoginResolver.new(request)
+    
+    if @lr.signed_in?
+      handle_signed_in_session
+    elsif @lr.logged_in?
       handle_logged_in_session
     else
-      @title = translate :login_title
       handle_login_request_session
     end
   end
 
   def continue
-    flash[:notice] = translate(:continue_message).gsub("%url%", request[:url])
+    flash[:notice] = localize(:continue_message).gsub("%url%", request[:url])
   end
-
+  
   private
 
+  # 
+  # display message to user letting them know they are currently signed on
+  #
+  def handle_signed_in_session
+    @title = localize :welcome
+    flash[:notice] = localize(:signed_in_message).gsub('%username%', @lr.username)
+  end
+  
+  #
+  # redirect to service when warn is false and service matches the TGT's service request
+  # failing that, redirect to the "continue" page to allow user to click-thru mannually
+  # failing that, display message on login page that user is logged in.
+  #
   def handle_logged_in_session
-    redirect @service if !@warn && @service && @service == @ticket_granting_ticket.service
-    redirect Login.route(:continue, :url => @service) if @service
+    @title = localize :welcome
+    flash[:notice] = localize(:successful_login)
     
-    flash[:notice] = translate(:logged_in_message).gsub('%username%', @ticket_granting_ticket.username.to_s)
-  end
-  
-  def handle_login_request_session
-    if authenticated?
-      @ticket_granting_ticket = TicketGrantingTicket.new(@username).save
-      response.set_cookie("ticket_granting_ticket", @ticket_granting_ticket.ticket)
-      
-      redirect :success unless @service
-      redirect route(:continue, :url => @service) if @warn
-      redirect @service
+    response.set_cookie(COOKIE_NAME, :path => "/", :value => TicketGrantingTicket.create(@lr.username).ticket)
+    
+    if @lr.service
+      redirect @lr.service if !@lr.warn && @lr.login_ticket.service_identifier_matches?
+      redirect Login.route(:continue, :url => @lr.service) if @lr.warn
+      redirect @lr.service
     end
-    @new_login_ticket = LoginTicket.new(@service).save
   end
-  
-  def logged_in?
-    @ticket_granting_ticket = TicketGrantingTicket.find(request.cookies["ticket_granting_ticket"])
-    @ticket_granting_ticket
-  end
-  
-  def authenticate
-    valid_login_ticket && valid_user
-  end
-  
-  def authenticated?    
-    @authenticated ||= authenticate
-  end
-  
-  def get_params
-    @service = request[:service]
-    @login_ticket = LoginTicket.find(@service, request[:lt]) if request.post?
 
-    @username   =   request[:username] if @login_ticket
-    @password   =   request[:password] if @login_ticket
-    @renew      =   0 == (request[:renew] =~ /yes|YES|true|TRUE|1/)
-    @gateway    =   @renew ? false : !!@service && 0 == (request[:gateway]  =~ /yes|YES|true|TRUE|1/)
-    @warn       =   0 == (request[:warn] =~ /yes|YES|true|TRUE|1/)
-  end
-    
-  def valid_login_ticket
-    valid = @login_ticket && @login_ticket.valid?
-    if !valid && request.post?
-      flash[:error] = translate :invalid_login_ticket unless (@login_ticket && @login_ticket.valid?)
-    end
-    valid
+  #
+  # Set title and login ticket so login form can display correctly
+  #
+  def handle_login_request_session
+    @title = localize :login_title
+    flash[:error] = localize @lr.authenticate_failure_message if @lr.authenticate_failed?
+
+    @new_login_ticket = LoginTicket.create(@lr.service)
   end
   
-  def valid_user
-    valid = @username && @password && VALID_USERS[@username] == @password
-    if request.post? && !valid
-      flash[:error] = translate VALID_USERS[@username] ? :invalid_password : :invalid_username
-    end
-    valid
-  end
 end

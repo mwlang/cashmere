@@ -65,9 +65,17 @@ describe Ticket do
       cheese.hostname.should == 'cheesy.com'
     end
     
+    it "should save to database when created" do
+      ticket = MockTicket.create
+      cheese = MockTicket.find(ticket.ticket)
+      cheese.should.not == nil
+      cheese.id.should == ticket.id
+      cheese.ticket.should == ticket.ticket
+      cheese.is_a?(MockTicket).should == true
+    end
+
     it "can be found and loaded" do
-      ticket = MockTicket.new
-      ticket.save
+      ticket = MockTicket.create
       cheese = MockTicket.find(ticket.ticket)
       cheese.should.not == nil
       cheese.id.should == ticket.id
@@ -76,8 +84,8 @@ describe Ticket do
     end
 
     it "non-existent tickets should not be findable" do
-      bogus_ticket = MockTicket.find("MOCK-bogusticketthatshouldneverexist")
-      bogus_ticket.should == nil
+      MockTicket.find("MOCK-bogusticketthatshouldneverexist").should == nil
     end
+    
   end
 end

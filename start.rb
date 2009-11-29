@@ -14,7 +14,6 @@ Ramaze.start(:adapter => :mongrel, :port => 7000, :file => __FILE__) do |mode|
   mode.use Rack::ConditionalGet
   mode.use Rack::ETag
   mode.use Rack::Head
-  mode.use Rack::Localize
   mode.use Rack::NoCache
   mode.use Ramaze::Reloader
   mode.run Ramaze::AppMap

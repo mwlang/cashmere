@@ -24,7 +24,7 @@ end
 
 Ramaze.setup :verbose => Ramaze.options.mode == :dev do
   gem 'sequel', :version => '>=3.1.0'
-  gem 'i18n',   :version => '>=0.3.0'
+  gem 'erubis', :version => '>=2.6.5'
 end
 
 # Load the library files 
@@ -38,10 +38,9 @@ Ramaze.options.layouts = File.join(Ramaze.options.views, 'layouts')
 # Establish database connection 
 DB_CONFIG = YAML.load(File.read(File.join(__DIR__, 'database.yml')))
 DB = Sequel.connect(DB_CONFIG[Ramaze.options[:mode].to_s])
+LOCALE_PATH = File.join(__DIR__, 'locales', '*.yaml')
 
-# Load the Internationalization files
-I18n.load_path += Dir[ File.join(__DIR__, 'locales', '**', '*.{rb,yml}') ]
-I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
+COOKIE_NAME = "TGC"
 
 # Ramaze.options.each_option{|key, value| puts("%-20s: %s" % [key, value[:value]]) }
 

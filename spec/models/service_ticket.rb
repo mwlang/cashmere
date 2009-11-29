@@ -37,7 +37,7 @@ describe ServiceTicket do
         ticket.created_at -= 6 * 60 # five minutes
         ticket.save
         
-        bad_ticket = ServiceTicket.find(ticket.service, ticket.ticket)
+        bad_ticket = ServiceTicket.find(ticket.ticket, ticket.service)
         bad_ticket.valid?.should == false
       end
     end
@@ -58,39 +58,57 @@ describe ServiceTicket do
       end
     end
 
+    it "should save to database when created" do 
+      new_ticket = ServiceTicket.create('http://cybrains.net')
+      good_ticket = ServiceTicket.find(new_ticket.ticket)
+      good_ticket.should.not == nil
+    end
+    
+    it "should keep requesting service when supplied" do 
+      new_ticket = ServiceTicket.create('http://cybrains.net')
+      new_ticket.service.should == 'http://cybrains.net'
+      good_ticket = ServiceTicket.find(new_ticket.ticket, new_ticket.service)
+      good_ticket.should.not == nil
+      good_ticket.service.should == 'http://cybrains.net'
+    end
+    
     describe "service identifier" do 
       
       it "must match what was specified to /login" do
         new_ticket = ServiceTicket.new('http://cybrains.net').save
-        good_ticket = ServiceTicket.find(new_ticket.service, new_ticket.ticket)
+        good_ticket = ServiceTicket.find(new_ticket.ticket, new_ticket.service)
         good_ticket.valid?.should == true
 
-        new_ticket = ServiceTicket.new('http://cybrains.net').save
-        bad_ticket = ServiceTicket.find('http://www.cybrains.net', new_ticket.ticket)
+        new_ticket = ServiceTicket.create('http://cybrains.net')
+        bad_ticket = ServiceTicket.find(new_ticket.ticket, 'http://notme.com')
+        bad_ticket.is_a?(ServiceTicket).should == true
+        bad_ticket.service.should == 'http://cybrains.net'
+        bad_ticket.requesting_service.should == 'http://notme.com'
         bad_ticket.valid?.should == false
       end
         
       it "a blank service should be valid" do
-        new_ticket = ServiceTicket.new('').save
-        good_ticket = ServiceTicket.find(new_ticket.service, new_ticket.ticket)
+        new_ticket = ServiceTicket.create
+        good_ticket = ServiceTicket.find(new_ticket.ticket)
         good_ticket.valid?.should == true
 
-        new_ticket = ServiceTicket.new(nil).save
-        good_ticket = ServiceTicket.find(new_ticket.service, new_ticket.ticket)
+        new_ticket = ServiceTicket.create
+        good_ticket = ServiceTicket.find(new_ticket.ticket, new_ticket.service)
         good_ticket.valid?.should == true
       end
         
       it "is only valid once!" do 
-        new_ticket = ServiceTicket.new('http://cybrains.net').save
-        good_ticket = ServiceTicket.find(new_ticket.service, new_ticket.ticket)
-        bad_ticket = ServiceTicket.find(new_ticket.service, new_ticket.ticket)
+        new_ticket = ServiceTicket.create('http://cybrains.net')
+        good_ticket = ServiceTicket.find(new_ticket.ticket, new_ticket.service)
+        bad_ticket = ServiceTicket.find(new_ticket.ticket, new_ticket.service)
         good_ticket.valid?.should == true
         bad_ticket.should == nil
       end
       
       it "is never valid if service identifiers don't match" do
         new_ticket = ServiceTicket.new('http://cybrains.net').save
-        bad_ticket = ServiceTicket.find('http://www.cybrains.net', new_ticket.ticket)
+        bad_ticket = ServiceTicket.find(new_ticket.ticket, 'http://www.cybrains.net')
+        bad_ticket.should.not == nil
         bad_ticket.valid?.should == false
       end
     end

@@ -15,12 +15,18 @@ class Ticket
     # ensure ticket isn't malformed before attempting to fetch
     return nil unless sane_ticket(ticket)
     
-    @attributes = DB[:tickets].filter(:ticket => ticket).first
-    @attributes ? new(ticket).load_attributes(@attributes) : nil
+    ticket = DB[:tickets].filter(:ticket => ticket).first
+    ticket ? new(ticket) : nil
   end
   
-  def initialize(ticket = nil)
-    unless ticket 
+  def self.create
+    new.save
+  end
+  
+  def initialize(values = nil)
+    if values
+      @attributes = values
+    else  
       @attributes = DB_FIELDS.inject({}){|a, df| a.merge!({df.to_sym => nil}) }
       @attributes[:ticket] = self.ticket_prefix + Digest::SHA1.hexdigest(rand(SEED).to_s)
       @attributes[:created_at] = Time.now
@@ -32,11 +38,6 @@ class Ticket
   end
   
   SEED = 4.times.inject(Time.now.to_i){|t, n| t += rand(n)}
-
-  def load_attributes(values)
-    @attributes = values
-    self
-  end
 
   def find_ticket(ticket)
     @attributes = DB[:tickets].filter(:ticket => ticket).first
