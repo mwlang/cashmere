@@ -175,54 +175,57 @@ class Login < Controller
   
   private
 
+  ##
+  # Passes back the original service param plus the newly minted service ticket
+  #
   def service_url
     query = Rack::Utils.build_query(:ticket => @service_ticket.ticket)
     URI("#{@lr.service}?#{query}")
   end
   
-  # 
+  ## 
   # display message to user letting them know they are currently signed on
   #
   def handle_signed_in_session
-    @title = localize :welcome
     @service_ticket = ServiceTicket.create(@lr.service)
     @lr.ticket_granting_cookie.service_ticket = @service_ticket
 
     redirect service_url if !@lr.warn && @lr.service && @lr.ticket_granting_cookie.service_ticket_matches?
+
+    @title = localize :welcome
     flash[:notice] = localize(:signed_in_message).gsub('%username%', @lr.username)
   end
   
-  #
+  ##
   # redirect to service when warn is false and service matches the TGT's service request
   # failing that, redirect to the "continue" page to allow user to click-thru mannually
   # failing that, display message on login page that user is logged in.
   #
   def handle_logged_in_session
-    @title = localize :welcome
-    flash[:notice] = localize(:successful_login)
-    
-    @service_ticket = ServiceTicket.create(@lr.service)
+    @service_ticket = ServiceTicket.new(@lr.service)
+    @service_ticket.username = @lr.username
+    @service_ticket.save
     @tgt = TicketGrantingTicket.create(@lr.username)
     @tgt.service_ticket = @service_ticket
     response.set_cookie(COOKIE_NAME, :path => "/", :value => @tgt.ticket)
     
     if @lr.service
-      query = Rack::Utils.build_query(:ticket => @service_ticket.ticket)
-      service_url = URI("#{@lr.service}?#{query}")
       redirect service_url if !@lr.warn && @lr.login_ticket.service_identifier_matches?
       redirect Login.route(:continue, :url => service_url) if @lr.warn
       redirect service_url
     end
+
+    @title = localize :welcome
+    flash[:notice] = localize(:successful_login)
   end
 
-  #
+  ##
   # Set title and login ticket so login form can display correctly
   #
   def handle_login_request_session
     @title = localize :login_title
-    flash[:error] = localize @lr.authenticate_failure_message if @lr.authenticate_failed?
-
     @new_login_ticket = LoginTicket.create(@lr.service)
+    flash[:error] = localize @lr.authenticate_failure_message if @lr.authenticate_failed?
   end
   
 end

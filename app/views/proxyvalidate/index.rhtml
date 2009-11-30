@@ -1,5 +1,13 @@
-<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>
+<% if @validated %>
+<cas:serviceResponse xmlns:cas='<%= route "/" %>'>
     <cas:authenticationSuccess>
-        <cas:user>username</cas:user>
+        <cas:user><%= @ticket.username %></cas:user>
     </cas:authenticationSuccess>
 </cas:serviceResponse>
+<% else %>
+<cas:serviceResponse xmlns:cas='<%= route "/" %>'>
+    <cas:authenticationFailure code="INVALID_TICKET">
+        ticket <%= request[:ticket] %> not recognized
+    </cas:authenticationFailure>
+</cas:serviceResponse>
+<% end %>

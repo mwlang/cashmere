@@ -54,6 +54,7 @@ class ProxyValidate < Controller
   def index
     @service = request[:service]
     @ticket = ServiceTicket.find(request[:ticket], @service)
+    @validated = !!@ticket && @ticket.service_identifier_matches?
     # @renew = request[:renew]
   end
 end
