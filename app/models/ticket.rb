@@ -7,10 +7,9 @@ class Ticket
   DB_FIELDS.each{|df| class_eval("def #{df}; @attributes[:#{df}]; end")}
   DB_FIELDS.each{|df| class_eval("def #{df}=(v); @attributes[:#{df}] = v; end")}
 
-  def self.sane_ticket(ticket)
-    ticket && (ticket.match(/^[a-zA-Z0-9-]*$/).to_s == ticket)
-  end
-  
+  RAND_SEED = 4.times.inject(Time.now.to_i){|t, n| t += rand(n)}
+  FIVE_MINUTES = 5 * 60 
+
   def self.find(ticket)
     # ensure ticket isn't malformed before attempting to fetch
     return nil unless sane_ticket(ticket)
@@ -28,16 +27,10 @@ class Ticket
       @attributes = values
     else  
       @attributes = DB_FIELDS.inject({}){|a, df| a.merge!({df.to_sym => nil}) }
-      @attributes[:ticket] = self.ticket_prefix + Digest::SHA1.hexdigest(rand(SEED).to_s)
+      @attributes[:ticket] = self.ticket_prefix + Digest::SHA1.hexdigest(rand(RAND_SEED).to_s)
       @attributes[:created_at] = Time.now
     end
   end
-
-  def ticket_prefix
-    raise "abstract method"
-  end
-  
-  SEED = 4.times.inject(Time.now.to_i){|t, n| t += rand(n)}
 
   def find_ticket(ticket)
     @attributes = DB[:tickets].filter(:ticket => ticket).first
@@ -59,6 +52,27 @@ class Ticket
   def expire!
     DB[:tickets].filter(:id => self.id).delete
   end
+  
+  def expired?
+    (Time.now - @attributes[:created_at]) > lifespan
+  end  
+
+  private 
+  
+  def self.sane_ticket(ticket)
+    ticket && (ticket.match(/^[a-zA-Z0-9-]*$/).to_s == ticket)
+  end
+
+  protected 
+  
+  def lifespan
+    FIVE_MINUTES
+  end
+  
+  def ticket_prefix
+    raise "abstract method"
+  end
+  
 end  
 
 # Used for testing since the base class raises exception 

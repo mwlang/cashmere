@@ -175,11 +175,20 @@ class Login < Controller
   
   private
 
+  def service_url
+    query = Rack::Utils.build_query(:ticket => @service_ticket.ticket)
+    URI("#{@lr.service}?#{query}")
+  end
+  
   # 
   # display message to user letting them know they are currently signed on
   #
   def handle_signed_in_session
     @title = localize :welcome
+    @service_ticket = ServiceTicket.create(@lr.service)
+    @lr.ticket_granting_cookie.service_ticket = @service_ticket
+
+    redirect service_url if !@lr.warn && @lr.service && @lr.ticket_granting_cookie.service_ticket_matches?
     flash[:notice] = localize(:signed_in_message).gsub('%username%', @lr.username)
   end
   
@@ -192,12 +201,17 @@ class Login < Controller
     @title = localize :welcome
     flash[:notice] = localize(:successful_login)
     
-    response.set_cookie(COOKIE_NAME, :path => "/", :value => TicketGrantingTicket.create(@lr.username).ticket)
+    @service_ticket = ServiceTicket.create(@lr.service)
+    @tgt = TicketGrantingTicket.create(@lr.username)
+    @tgt.service_ticket = @service_ticket
+    response.set_cookie(COOKIE_NAME, :path => "/", :value => @tgt.ticket)
     
     if @lr.service
-      redirect @lr.service if !@lr.warn && @lr.login_ticket.service_identifier_matches?
-      redirect Login.route(:continue, :url => @lr.service) if @lr.warn
-      redirect @lr.service
+      query = Rack::Utils.build_query(:ticket => @service_ticket.ticket)
+      service_url = URI("#{@lr.service}?#{query}")
+      redirect service_url if !@lr.warn && @lr.login_ticket.service_identifier_matches?
+      redirect Login.route(:continue, :url => service_url) if @lr.warn
+      redirect service_url
     end
   end
 

@@ -40,7 +40,7 @@ describe ProxyTicket do
         ticket.created_at -= 6 * 60 # five minutes
         ticket.save
         
-        bad_ticket = ProxyTicket.find(ticket.service, ticket.ticket)
+        bad_ticket = ProxyTicket.find(ticket.ticket, ticket.service)
         bad_ticket.valid?.should == false
       end
     end

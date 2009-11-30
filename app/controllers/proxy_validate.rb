@@ -49,10 +49,11 @@ On ticket validation failure:
 
 class ProxyValidate < Controller
   map '/proxyValidate'
+  layout nil
+  
   def index
     @service = request[:service]
-    @ticket = request[:ticket]
-    @renew = request[:renew]
-    @title = "Proxy Validate"
+    @ticket = ServiceTicket.find(request[:ticket], @service)
+    # @renew = request[:renew]
   end
 end

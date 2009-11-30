@@ -12,5 +12,8 @@
 
 
 class LoginTicket < ServiceTicket
+
+  protected 
+    
   def ticket_prefix; "LT-" end
 end

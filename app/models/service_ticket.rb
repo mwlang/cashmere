@@ -22,21 +22,17 @@
 =end
 
 class ServiceTicket < Ticket
-  FIVE_MINUTES = 5 * 60 
   
   attr_accessor :requesting_service
   
   def self.find(ticket, service = nil)
-    # ensure ticket isn't malformed before attempting to fetch
     return nil unless sane_ticket(ticket)
+    new_from_find({:ticket => ticket}, service)
+  end
     
-    ticket = DB[:tickets].filter(:ticket => ticket).first
-    if ticket
-      ticket = new(ticket[:service], ticket)
-      ticket.expire!
-      ticket.requesting_service = service
-    end
-    ticket
+  def self.find_by_id(ticket_id, service = nil)
+    return nil unless ticket_id
+    new_from_find({:id => ticket_id}, service)
   end
     
   def self.create(service = nil)
@@ -48,8 +44,6 @@ class ServiceTicket < Ticket
     @attributes[:service] = service
   end
   
-  def ticket_prefix; "ST-" end
-
   def valid? 
     service_identifier_matches? && !expired?
   end
@@ -57,10 +51,21 @@ class ServiceTicket < Ticket
   def service_identifier_matches?
     @requesting_service == self.service
   end
+
+  protected 
   
+  def ticket_prefix; "ST-" end
+
   private
 
-  def expired?
-    (Time.now - @attributes[:created_at]) > FIVE_MINUTES
-  end  
+  def self.new_from_find(filter, service)
+    ticket = DB[:tickets].filter(filter).first
+    if ticket
+      ticket = new(ticket[:service], ticket)
+      ticket.expire!
+      ticket.requesting_service = service
+    end
+    ticket
+  end
+  
 end

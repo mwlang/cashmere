@@ -13,9 +13,7 @@
 =end
 
 class TicketGrantingTicket < Ticket
-  def ticket_prefix; "TGC-" end
-  
-  
+    
   def self.find(ticket)
     # ensure ticket isn't malformed before attempting to fetch
     return nil unless sane_ticket(ticket)
@@ -37,9 +35,24 @@ class TicketGrantingTicket < Ticket
   def valid?
     !expired?
   end
-  
-  def expired?
-    (Time.now - @attributes[:created_at]) > 30.days
-  end  
 
+  def service_ticket_matches?
+    self.service_ticket.service == self.service
+  end
+  
+  def service_ticket=(ticket)
+    self.ticket_id = ticket.id
+    save if self.id
+  end
+  
+  def service_ticket
+    ServiceTicket.find_by_id(self.ticket_id, self.service)
+  end
+  
+  protected 
+   
+  def lifespan; 30.days end
+  
+  def ticket_prefix; "TGC-" end
+      
 end

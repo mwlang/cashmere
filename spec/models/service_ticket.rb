@@ -64,6 +64,13 @@ describe ServiceTicket do
       good_ticket.should.not == nil
     end
     
+    it "should be found by ticket id" do 
+      new_ticket = ServiceTicket.create('http://cybrains.net')
+      good_ticket = ServiceTicket.find_by_id(new_ticket.id)
+      good_ticket.should.not == nil
+    end
+    
+    
     it "should keep requesting service when supplied" do 
       new_ticket = ServiceTicket.create('http://cybrains.net')
       new_ticket.service.should == 'http://cybrains.net'
@@ -103,6 +110,8 @@ describe ServiceTicket do
         bad_ticket = ServiceTicket.find(new_ticket.ticket, new_ticket.service)
         good_ticket.valid?.should == true
         bad_ticket.should == nil
+        bad_ticket2 = ServiceTicket.find_by_id(new_ticket.id, new_ticket.service)
+        bad_ticket2.should == nil
       end
       
       it "is never valid if service identifiers don't match" do

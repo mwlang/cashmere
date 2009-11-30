@@ -27,10 +27,9 @@
 					<tr><td>Service: <%= @lr.service %></td><td>Warn: <%= @lr.warn %></td></tr>
 					<tr><td colspan=2>Login Ticket: <%= @lr.login_ticket.ticket if @lr.login_ticket %></td></tr>
 					<tr><td>Gateway: <%= @gateway %></td><td>Renew: <%= @renew %></td></tr>
-					<tr><td colspan=2>TGC: <%= @lr.ticket_granting_cookie.ticket if @lr.ticket_granting_cookie %></td></tr>
-					<tr><td colspan=2>Locale:  <%= request.env["HTTP_ACCEPT_LANGUAGE"] %><br/><%= request.env['rack.locale'] %></td></tr>
+					<tr><td colspan=2>Cookie: <%= request.cookies[COOKIE_NAME] %></td></tr>
+					<tr><td colspan=2>Locale:  <%= request.env["HTTP_ACCEPT_LANGUAGE"] %></td></tr>
 				</table>
-				<%= request.cookies.inspect %>
 			</center>
 		</div>
 	<% end %>
