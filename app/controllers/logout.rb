@@ -28,5 +28,6 @@ class Logout < Controller
     ticket = TicketGrantingTicket.find(request.cookies[COOKIE_NAME])
     response.delete_cookie(COOKIE_NAME)
     ticket.expire! if ticket
+    flash[:notice] = localize :logged_out_message
   end
 end

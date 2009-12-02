@@ -90,7 +90,7 @@ class LoginResolver
   end
   
   def authenticate_failure_message
-    VALID_USERS[@username] ? :invalid_password : :invalid_username
+    Authenticator.user_exists?(@username) ? :invalid_password : :invalid_username
   end
   
   def params
@@ -102,11 +102,9 @@ class LoginResolver
   
   private
   
-  VALID_USERS = {"mwlang" => "mwlang", "demo" => "secret"}
-
   # can only validate when both username and password are supplied
   def authenticate_user(username, password)
-    @user_authenticated ||= !!@username && !!@password && VALID_USERS[@username] == @password
+    @user_authenticated ||= !!@username && !!@password && Authenticator.authenticate(@username, @password)
   end
   
 end

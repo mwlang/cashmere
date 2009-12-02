@@ -190,7 +190,7 @@ class Login < Controller
     @service_ticket = ServiceTicket.create(@lr.service)
     @lr.ticket_granting_cookie.service_ticket = @service_ticket
 
-    redirect service_url if !@lr.warn && @lr.service && @lr.ticket_granting_cookie.service_ticket_matches?
+    redirect service_url if !@lr.warn && @lr.service
 
     @title = localize :welcome
     flash[:notice] = localize(:signed_in_message).gsub('%username%', @lr.username)

@@ -1,0 +1,5 @@
+<cas:serviceResponse xmlns:cas='<%= route "/" %>'>
+    <cas:authenticationFailure code="INVALID_TICKET">
+        ticket <%= request[:ticket] %> not recognized
+    </cas:authenticationFailure>
+</cas:serviceResponse>

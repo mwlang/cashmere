@@ -1,5 +1,4 @@
-<div id="logo-container"></div>
-<div id="login-container">
-	<div id="messagebox-container"><%= localize :logged_out_message %></div>
-	<div id="logout-form"><p><a id="login-button" href="<%= Login.route(:/) %>"><%= localize :login %></a></p></div>
+<%= flashbox %>
+<div id="logout-form">
+	<p><a id="login-button" href="<%= Login.route(:/) %>"><%= localize :login %></a></p>
 </div>

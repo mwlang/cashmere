@@ -1,0 +1,5 @@
+<cas:serviceResponse xmlns:cas='<%= route "/" %>'>
+    <cas:authenticationSuccess>
+        <cas:user><%= @ticket.username %></cas:user>
+    </cas:authenticationSuccess>
+</cas:serviceResponse>
